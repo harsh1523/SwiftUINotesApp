@@ -5,13 +5,24 @@
 //  Created by Harsh on 25/12/25.
 //
 
-import SwiftUI
+internal import SwiftUI
 
 @main
-struct SwiftUINotesAppApp: App {
+struct SwiftUINotesApp: App {
+
+    @StateObject private var lockManager = AppLockManager()
+    @StateObject private var notesVM = NotesViewModel() // ✅ now works
+
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            if lockManager.isAppLocked {
+                AppLockView()
+                    .environmentObject(lockManager)
+            } else {
+                NotesListView()
+                    .environmentObject(lockManager)
+                    .environmentObject(notesVM)
+            }
         }
     }
 }
